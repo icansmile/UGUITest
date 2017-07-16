@@ -146,6 +146,7 @@ public class Main : MonoBehaviour {
 
 		if(GUILayout.Button("开始填充"))
 		{
+			image.gameObject.SetActive(!image.gameObject.activeInHierarchy);
 			image.fillMethod = Image.FillMethod.Radial360;
 			image.fillOrigin = 0;
 			timeCounter = 0;
@@ -160,6 +161,7 @@ public class Main : MonoBehaviour {
 
 		if(GUILayout.Button("文本"))
 		{
+			text.gameObject.SetActive(!text.gameObject.activeInHierarchy);
 			text.text = "UGUI <color=red>文本</color>";
 			text.fontSize = 20;
 			text.color = Color.cyan;
