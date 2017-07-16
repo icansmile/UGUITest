@@ -4,13 +4,17 @@ using UnityEngine.UI;
 
 public class Main : MonoBehaviour {
 
+	private float timeCounter = 0;
+	private float timeAmount = 3;
+
 	public Text text;
-
 	public Image image;
-	float timeCounter = 0;
-	float timeAmount = 3;
-
 	public Button button;
+	public Slider slider;
+	public Scrollbar scrollbar;
+	public ScrollRect scrollView;
+	public InputField inputFiled;
+	public Toggle toggle;
 
 	/// <summary>
 	/// Start is called on the frame when a script is enabled just before
@@ -41,6 +45,84 @@ public class Main : MonoBehaviour {
 		showText();
 		showImage();
 		showButton();
+		showSlider();
+		showScrollbar();
+		showScrollView();
+		showInputField();
+		showToggle();
+	}
+
+	void showToggle()
+	{
+		if(GUILayout.Button("开关"))
+		{
+			toggle.gameObject.SetActive(!toggle.gameObject.activeInHierarchy);
+			toggle.isOn = false;
+			toggle.onValueChanged.RemoveAllListeners();
+			toggle.onValueChanged.AddListener(isOn => {
+				Debug.Log("Toggle isOn: " + isOn);
+			});
+		}
+	}
+
+	void showInputField()
+	{
+		if(GUILayout.Button("输入框"))
+		{
+			inputFiled.gameObject.SetActive(!inputFiled.gameObject.activeInHierarchy);
+			inputFiled.text = "";
+			inputFiled.onEndEdit.RemoveAllListeners();
+			inputFiled.onEndEdit.AddListener((str) => {
+				Debug.Log("Input Field: " + str);
+			});
+		}
+	}
+
+	void showScrollView()
+	{
+		GUILayout.BeginHorizontal();
+
+		if(GUILayout.Button("滚动窗"))
+		{
+			scrollView.gameObject.SetActive(!scrollView.gameObject.activeInHierarchy);
+			scrollView.onValueChanged.RemoveAllListeners();
+			scrollView.onValueChanged.AddListener(pos => {
+				Debug.Log("Scroll View Pos: " + pos);
+			});
+		}
+
+		if(GUILayout.Button("重置垂直滚动条"))
+		{
+			scrollView.verticalScrollbar.value = 1;
+		}
+
+		GUILayout.EndHorizontal();
+	}
+
+	void showScrollbar()
+	{
+		if(GUILayout.Button("滚动条"))
+		{
+			scrollbar.gameObject.SetActive(!scrollbar.gameObject.activeInHierarchy);
+			scrollbar.value = 0;
+			scrollbar.onValueChanged.RemoveAllListeners();
+			scrollbar.onValueChanged.AddListener(value => {
+				image.transform.eulerAngles = new Vector3(0, 0, 360 * value);
+			});
+		}
+	}
+
+	void showSlider()
+	{
+		if(GUILayout.Button("进度条"))
+		{
+			slider.gameObject.SetActive(!slider.gameObject.activeInHierarchy);
+			slider.value = 0;
+			slider.onValueChanged.RemoveAllListeners();
+			slider.onValueChanged.AddListener((value) => {
+				Debug.Log("Slider Value: " + slider.value);
+			});
+		}
 	}
 
 	void showButton()
