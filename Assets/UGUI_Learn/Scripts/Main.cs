@@ -16,6 +16,11 @@ public class Main : MonoBehaviour {
 	public InputField inputFiled;
 	public Toggle toggle;
 
+	public Canvas canvasRectTransform;
+	public RectTransform rectTransform;
+	public Slider rectTransformSlider;
+
+
 	/// <summary>
 	/// Start is called on the frame when a script is enabled just before
 	/// any of the Update methods is called the first time.
@@ -50,6 +55,52 @@ public class Main : MonoBehaviour {
 		showScrollView();
 		showInputField();
 		showToggle();
+
+		testRectTransform();
+	}
+
+	void testRectTransform()
+	{
+		GUILayout.BeginHorizontal();
+
+		if(GUILayout.Button("测试RectTransform"))
+		{
+			canvasRectTransform.gameObject.SetActive(!canvasRectTransform.gameObject.activeInHierarchy);
+			rectTransformSlider.onValueChanged.RemoveAllListeners();
+			rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+			rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+			rectTransform.anchoredPosition = Vector2.zero;
+			Debug.Log(rectTransform.offsetMax);
+		}
+
+		if(GUILayout.Button("anchorMax"))
+		{
+			rectTransformSlider.onValueChanged.RemoveAllListeners();
+			rectTransformSlider.onValueChanged.AddListener(value => {
+				rectTransformSlider.handleRect.transform.Find("Text").GetComponent<Text>().text = value.ToString();
+				rectTransform.anchorMax = new Vector2(value, value);
+			});
+		}
+
+		if(GUILayout.Button("anchorMin"))
+		{
+			rectTransformSlider.onValueChanged.RemoveAllListeners();
+			rectTransformSlider.onValueChanged.AddListener(value => {
+				rectTransformSlider.handleRect.transform.Find("Text").GetComponent<Text>().text = value.ToString();
+				rectTransform.anchorMin = new Vector2(value, value);
+			});
+		}
+
+		if(GUILayout.Button("anchorPosition"))
+		{
+			rectTransformSlider.onValueChanged.RemoveAllListeners();
+			rectTransformSlider.onValueChanged.AddListener(value => {
+				rectTransformSlider.handleRect.transform.Find("Text").GetComponent<Text>().text = value.ToString();
+				rectTransform.anchoredPosition = new Vector2(value * 220, value * 220);
+			});
+		}
+
+		GUILayout.EndHorizontal();
 	}
 
 	void showToggle()
