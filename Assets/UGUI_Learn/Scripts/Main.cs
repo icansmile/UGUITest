@@ -14,7 +14,7 @@ public class Main : MonoBehaviour {
 	public Scrollbar scrollbar;
 	public ScrollRect scrollView;
 	public InputField inputFiled;
-	public Toggle toggle;
+	public ToggleGroup toggleGroup;
 
 	public Canvas canvasRectTransform;
 	public RectTransform rectTransform;
@@ -108,12 +108,24 @@ public class Main : MonoBehaviour {
 	{
 		if(GUILayout.Button("开关"))
 		{
-			toggle.gameObject.SetActive(!toggle.gameObject.activeInHierarchy);
-			toggle.isOn = false;
-			toggle.onValueChanged.RemoveAllListeners();
-			toggle.onValueChanged.AddListener(isOn => {
-				Debug.Log("Toggle isOn: " + isOn);
-			});
+						
+			toggleGroup.gameObject.SetActive(!toggleGroup.gameObject.activeInHierarchy);
+
+			for(int i = 0; i < toggleGroup.transform.childCount; ++i)
+			{
+				//如果直接把 i 传入匿名函数， 则输出结果全都是 i 的最后一个值！
+				int index = i;
+
+				Toggle toggle = toggleGroup.transform.GetChild(i).GetComponent<Toggle>();
+
+				toggle.isOn = false;
+				toggle.onValueChanged.RemoveAllListeners();
+				toggle.onValueChanged.AddListener(isOn => {
+					Debug.Log(string.Format("Toggle {0} isOn: {1}", index.ToString(), isOn.ToString()));
+				});
+
+				toggle.group = toggleGroup;
+			}
 		}
 	}
 
