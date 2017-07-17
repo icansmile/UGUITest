@@ -59,6 +59,7 @@ public class Main : MonoBehaviour {
 		testRectTransform();
 	}
 
+	//http://www.jianshu.com/p/dbefa746e50d
 	void testRectTransform()
 	{
 		GUILayout.BeginHorizontal();
