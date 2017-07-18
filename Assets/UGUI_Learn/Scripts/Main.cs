@@ -15,6 +15,8 @@ public class Main : MonoBehaviour {
 	public ScrollRect scrollView;
 	public InputField inputFiled;
 	public ToggleGroup toggleGroup;
+	public GridLayoutGroup gridLayoutGroup;
+	public Object itemPrefab;
 
 	public Canvas canvasRectTransform;
 	public RectTransform rectTransform;
@@ -55,8 +57,30 @@ public class Main : MonoBehaviour {
 		showScrollView();
 		showInputField();
 		showToggle();
+		showGridLayoutGroup();
 
 		testRectTransform();
+	}
+
+	//http://k79k06k02k.com/blog/542/unity/unity-ugui-%E5%8E%9F%E7%90%86%E7%AF%87%E4%BA%94%EF%BC%9Aauto-layout-%E8%87%AA%E5%8B%95%E4%BD%88%E5%B1%80
+	void showGridLayoutGroup()
+	{
+		if(GUILayout.Button("Grid和Table"))
+		{
+			gridLayoutGroup.gameObject.SetActive(!gridLayoutGroup.gameObject.activeInHierarchy);
+			
+			int itemCount = 7;
+			for(int i = 0; i < gridLayoutGroup.transform.childCount; ++i)
+			{
+				Destroy(gridLayoutGroup.transform.GetChild(i).gameObject);
+			}
+
+			for(int i = 0; i < itemCount; ++i)
+			{
+				GameObject itemGo = Instantiate(itemPrefab, Vector3.zero, new Quaternion(0,0,0,0)) as GameObject;
+				itemGo.transform.SetParent(gridLayoutGroup.transform);
+			}
+		}
 	}
 
 	//http://www.jianshu.com/p/dbefa746e50d
