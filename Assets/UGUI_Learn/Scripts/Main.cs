@@ -1,6 +1,6 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class Main : MonoBehaviour {
 
@@ -17,6 +17,7 @@ public class Main : MonoBehaviour {
 	public ToggleGroup toggleGroup;
 	public GridLayoutGroup gridLayoutGroup;
 	public Object itemPrefab;
+	public Dropdown dropdown;
 
 	public Canvas canvasRectTransform;
 	public RectTransform rectTransform;
@@ -58,8 +59,34 @@ public class Main : MonoBehaviour {
 		showInputField();
 		showToggle();
 		showGridLayoutGroup();
+		showDropdown();
 
 		testRectTransform();
+	}
+
+	void showDropdown()
+	{
+		if(GUILayout.Button("下拉选择框"))
+		{
+			dropdown.gameObject.SetActive(!dropdown.gameObject.activeInHierarchy);
+			dropdown.captionText.text = "下拉选择框";
+
+			dropdown.ClearOptions();
+			List<Dropdown.OptionData> dataList = new List<Dropdown.OptionData>();
+			for(int i = 0; i < 5; ++i)
+			{
+				var data = new Dropdown.OptionData();
+				data.text = "option " + i;
+				dataList.Add(data);
+			}
+
+			dropdown.options = dataList;
+
+			dropdown.onValueChanged.RemoveAllListeners();
+			dropdown.onValueChanged.AddListener(dataIndex => {
+				Debug.Log("Select " + dataIndex);
+			});
+		}
 	}
 
 	//http://k79k06k02k.com/blog/542/unity/unity-ugui-%E5%8E%9F%E7%90%86%E7%AF%87%E4%BA%94%EF%BC%9Aauto-layout-%E8%87%AA%E5%8B%95%E4%BD%88%E5%B1%80
