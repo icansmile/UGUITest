@@ -1,10 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 using System.IO;
+using System.Collections.Generic;
 
 
+//[Sprite Packer] https://docs.unity3d.com/Manual/SpritePacker.html
+//还可以批量设置图集属性，往后在实践中了解
 public class AtlasPacker {
 
 	[MenuItem("MyTool/MakePrefabsWithAtlas")]
@@ -26,6 +27,13 @@ public class AtlasPacker {
 		foreach(DirectoryInfo dirInfo in atlasPicDirInfo.GetDirectories())
 		{
 			// Debug.Log(dirInfo.FullName);
+			string resourcesDir = prefabDir + "/" + dirInfo.Name;
+
+			if(!Directory.Exists(resourcesDir))
+			{
+				Directory.CreateDirectory(resourcesDir);
+			}
+
 			foreach(FileInfo fileInfo in dirInfo.GetFiles("*.png"))
 			{
 				string picPath = fileInfo.FullName;
@@ -37,7 +45,7 @@ public class AtlasPacker {
 				SpriteRenderer spriteRenderer = spriteGo.AddComponent<SpriteRenderer>();
 				spriteRenderer.sprite = sprite;
 
-				string prefabPath = prefabDir + "/" + sprite.name + ".prefab";
+				string prefabPath = resourcesDir + "/" + sprite.name + ".prefab";
 				PrefabUtility.CreatePrefab(prefabPath.Substring(prefabPath.IndexOf("Assets")), spriteGo);
 
 				//Destroy may not be called from edit mode! Use DestroyImmediate instead.
