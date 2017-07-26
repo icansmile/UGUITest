@@ -38,20 +38,29 @@ public class AssetBundlesBuilder : EditorWindow
 	[MenuItem("AssetBundles/Tool/SetMaterial")]
 	private static void SetMaterial()
 	{
-		var resDir = "Assets/AssetBundles_Learn/Res";
-		var matPaths = Directory.GetFiles(Application.dataPath + "/../" + resDir + "/Materials");
+		string resDir = "Assets/AssetBundles_Learn/Res";
+		string[] matPaths = Directory.GetFiles(Application.dataPath + "/../" + resDir + "/Materials");
 
 		foreach(string matPath in matPaths)
 		{
 			if(matPath.Contains(".meta")) continue;
 
-			string name = matPath.Substring(matPath.LastIndexOf('/') + 1);
-			var mat = AssetDatabase.LoadAssetAtPath<Material>(resDir + "/Materials/" + name);
-			var tex = AssetDatabase.LoadAssetAtPath<Texture>(resDir + "/Textures/" + name.Replace(".mat", ".jpg"));
+			string matName = matPath.Substring(matPath.LastIndexOf('/') + 1);
+
+			Material mat = AssetDatabase.LoadAssetAtPath<Material>(resDir + "/Materials/" + matName);
+			Texture tex = AssetDatabase.LoadAssetAtPath<Texture>(resDir + "/Textures/" + matName.Replace(".mat", ".jpg"));
+
 			if(tex != null)
 			{
 				mat.mainTexture = tex;
 				Debug.Log(string.Format("set mat {0}", mat.name));
+
+				GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+				cube.GetComponent<MeshRenderer>().material = mat;
+
+				PrefabUtility.CreatePrefab(resDir + "/Prefabs/" + matName.Replace(".mat", ".prefab"), cube);
+
+				DestroyImmediate(cube);
 			}
 		}
 
