@@ -38,17 +38,16 @@ public class AssetBundlesBuilder : EditorWindow
 	[MenuItem("AssetBundles/Tool/SetMaterial")]
 	private static void SetMaterial()
 	{
-		var resDir = Application.dataPath + "/AssetBundles_Learn/Res";
-		var matPaths = Directory.GetFiles(resDir + "/Materials");
+		var resDir = "Assets/AssetBundles_Learn/Res";
+		var matPaths = Directory.GetFiles(Application.dataPath + "/../" + resDir + "/Materials");
 
 		foreach(string matPath in matPaths)
 		{
 			if(matPath.Contains(".meta")) continue;
 
-			string name = matPath.Substring(matPath.LastIndexOf('/') + 1).Replace(".mat", "");
-			Debug.Log(name);
+			string name = matPath.Substring(matPath.LastIndexOf('/') + 1);
 			var mat = AssetDatabase.LoadAssetAtPath<Material>(resDir + "/Materials/" + name);
-			var tex = AssetDatabase.LoadAssetAtPath<Texture>(resDir + "/Textures/" + mat.name);
+			var tex = AssetDatabase.LoadAssetAtPath<Texture>(resDir + "/Textures/" + name.Replace(".mat", ".jpg"));
 			if(tex != null)
 			{
 				mat.mainTexture = tex;
