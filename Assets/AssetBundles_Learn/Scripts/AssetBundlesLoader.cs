@@ -15,8 +15,8 @@ https://www.one-tab.com/page/A1rUTxPVR-2wOXtgLGh6LQ
 
 3.WWW.LoadFromCacheOrDownload， 用于从远程服务器下载 或 从本地加载 bundle。 从远程服务器下载下来以后，会开启一个工作线程来解压并缓存。如果目标bundle已经解压并缓存了，
 则这个方法同 AssetBundle.LoadFromFile 是一样的效果。
-由于这个方法会在WWW对象中缓存bundle字节数据，所以要保持bundle尽量小，最多几兆。并且保证一次只加载一个bundle，避免内存高峰。
-如果缓存空间不足，则会自动最近最少用到的bundle, 直到足以缓存当前bundle。如果实在没法腾出空间了（硬盘空间满 或者 bundle都在使用中）,则会把当前bundle数据放进内存中。
+由于这个方法会在WWW对象中缓存bundle字节数据，所以要保持bundle尽量小，并且保证一次只加载一个bundle，避免内存高峰。
+如果缓存空间不足，则会Unload自动最近最少用到的bundle, 直到足以缓存当前bundle。如果实在没法腾出空间了（硬盘空间满 或者 bundle都在使用中）,则会把当前bundle数据放进内存中。
 有个version参数。
 	即将被遗弃，使用UnityWebRequest代替
 
@@ -49,6 +49,26 @@ bundle.LoadAsset, LoadAllAssets，以及他们的异步加载 LoadAssetAsync, Lo
 当必须使用Unload(false)的时候， 还需要调用Resources.UnloadUnusedAssets (这个方法具体什么用， 这样做和Unload(true) 有何区别？)
 	Unload(false) 会断开AssetBundle 和 生成的引用Obejct的链接， 当下载再次AssetBundle.LoadAsset的时候，就会多产生一个引用Object
 	所以Unload, 在两种情况下分别会卸载哪些东西？>_<!
+
+============================================================================================================================
+补丁
+Unity没有提供差异检测功能,需要自己实现一套
+需要判断哪些补丁是需要替换的, 1.需要当前本地下载完成的bundle列表以及版本信息  2.远程服务器的bundle列表以及版本信息
+
+============================================================================================================================
+可能出现的问题
+1.Asset资源重复: 正确处理依赖关系,合理分包加载卸载
+2.Sprite Altas 精灵图集重复 : 图集会在每一个引用到他的bundle中都有一个副本, 保证所有引用到同一个图集的精灵都打在同一个bundle中.
+3.Android Texture 安卓纹理 : 所有安卓设备支持ETC1的纹理,但是ETC1不支持透明通道. 如果应用不需支持opengl es2, 则可以使用ETC2, 所有opengl es3的设备都支持ETC2.
+其他特殊情况,可以通过设定变体Variant来区分纹理格式, 需要特殊区分的纹理应该单独放在一个bundle中, 这样方便单独更新.
+
+============================================================================================================================
+热更新的情况: http://lvmingbei.hatenablog.com/entry/2016/04/25/185738
+1.版本控制. 文件是否存在, hash值是否一致, size是否一致
+2.断点续传
+3.设备休眠处理
+4.程序切换
+5.网络连接异常
  */
 
 public class AssetBundlesLoader 
@@ -66,11 +86,12 @@ public class AssetBundlesLoader
 				instance = new AssetBundlesLoader();
 			}
 
-			return instance;
-		}
+			return instance; }
 	}
 
 	private AssetBundlesLoader(){}
+
+	
 
 	public IEnumerator LoadFromMemoryAsync(string path)
 	{
@@ -79,7 +100,7 @@ public class AssetBundlesLoader
 		yield return createRequest;
 
 		AssetBundle bundle = createRequest.assetBundle;
-		addBundle(path, bundle);
+		addBundle(bundle.name, bundle);
 
 		yield return null;
 	}
@@ -87,7 +108,7 @@ public class AssetBundlesLoader
 	public AssetBundle LoadFromMemorySync(string path)
 	{
 		AssetBundle bundle = AssetBundle.LoadFromMemory(File.ReadAllBytes(path));
-		addBundle(path, bundle);
+		addBundle(bundle.name, bundle);
 
 		return bundle;
 	}
@@ -95,38 +116,49 @@ public class AssetBundlesLoader
 	public AssetBundle LoadFromFile(string path)
 	{
 		AssetBundle bundle = AssetBundle.LoadFromFile(path);
-		addBundle(path, bundle);
+		addBundle(bundle.name, bundle);
 
 		return bundle;
 	}
 
-	//可能官方案例不是最佳实践？ www不用dispose么？
+	//可能官方案例不是最佳实践？ www不用dispose么？ ..反正这里用using自动dispose下先
 	public IEnumerator LoadFromCacheOrDownload(string url, int version)
 	{
 		while(!Caching.ready)
 			yield return null;
 		
-		WWW www = WWW.LoadFromCacheOrDownload(url, version);
-		yield return www;
-
-		if(!string.IsNullOrEmpty(www.error))
+		using(WWW www = WWW.LoadFromCacheOrDownload(url, version))
 		{
-			Debug.LogError(www.error);
-			yield return null;
+			yield return www;
+
+			if(!string.IsNullOrEmpty(www.error))
+			{
+				Debug.LogError(www.error);
+				yield break;
+			}
+
+			addBundle(www.assetBundle.name, www.assetBundle);
 		}
 
-		addBundle(url, www.assetBundle);
+		yield return null;
 	}
 
-	public IEnumerator UnityWebRequest(string uri, string version)
+	public IEnumerator UnityWebRequest(string uri, uint version)
 	{
-		UnityEngine.Networking.UnityWebRequest request = UnityEngine.Networking.UnityWebRequest.GetAssetBundle(uri);
+		using(UnityEngine.Networking.UnityWebRequest request = UnityEngine.Networking.UnityWebRequest.GetAssetBundle(uri, version))
+		{
+			yield return request.Send();
+			
+			if(request.isError)
+			{
+				Debug.Log(request.error);
+				Debug.Log(request.responseCode);
+			}
 
-		yield return request.Send();
+			AssetBundle bundle = UnityEngine.Networking.DownloadHandlerAssetBundle.GetContent(request);
 
-		AssetBundle bundle = UnityEngine.Networking.DownloadHandlerAssetBundle.GetContent(request);
-
-		addBundle(uri, bundle);
+			addBundle(bundle.name, bundle);
+		}
 
 		yield return null;
 	}
@@ -156,16 +188,16 @@ public class AssetBundlesLoader
 
 
 
-	public T GetRes<T> (string path, string name) where T : Object
+	public T GetRes<T> (string bundleName, string assetName) where T : Object
 	{
-		if(bundleDict.ContainsKey(path))
+		if(bundleDict.ContainsKey(bundleName))
 		{
-			return bundleDict[path].LoadAsset<T>(name);
+			return bundleDict[bundleName].LoadAsset<T>(assetName);
 		}
 		else
 		{
-			AssetBundle bundle = LoadFromMemorySync(path);
-			return bundle.LoadAsset<T>(name);
+			AssetBundle bundle = LoadFromMemorySync(bundleName);
+			return bundle.LoadAsset<T>(assetName);
 		}
 	}
 
@@ -177,15 +209,16 @@ public class AssetBundlesLoader
 
 
 
-	private void addBundle(string path, AssetBundle bundle)
+	private void addBundle(string bundleName, AssetBundle bundle)
 	{
 		if(bundle != null)
 		{
-			bundleDict[path] = bundle;
+			bundleDict[bundleName] = bundle;
+			Debug.Log(string.Format("load bundle name={0}", bundle.name));
 		}
 		else
 		{
-			Debug.LogError(string.Format("path={0}, bundle=null", path));
+			Debug.LogError(string.Format("name={0}, bundle=null", bundleName));
 		}
 	}
 

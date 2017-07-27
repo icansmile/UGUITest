@@ -1,7 +1,16 @@
 ManifestFileVersion: 0
-CRC: 1000220408
+CRC: 820235717
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
-      Name: bg
+      Name: bg_same_mat
+      Dependencies: {}
+    Info_1:
+      Name: bg_1n2
+      Dependencies: {}
+    Info_2:
+      Name: bg2
+      Dependencies: {}
+    Info_3:
+      Name: bg1
       Dependencies: {}

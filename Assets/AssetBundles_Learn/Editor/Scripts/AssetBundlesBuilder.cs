@@ -7,9 +7,10 @@ using System.IO;
 // 打包组织方式 :
 // 1.按逻辑实体, 如 UI, 角色, 场景, 经常出现在游戏中的资源, 方便热更新单独的模块
 // 2.按资源类型. 如 audio, shader, 方便对应多平台资源
+// 3.按运行时需求. 如同时需要使用到的
 // 准则 :
 // 1.分离 常用 和 不常用
-// 2.多个ab包都会一用到的资源, 可以单独分离出来放在一个新的 [共享AB包]
+// 2.多个ab包都会用到的资源, 可以单独分离出来放在一个新的 [共享AB包]
 // 3.分离 经常加载 和 不常加载
 // 4.组合经常使用的散包
 // 5.统一物体的不同版本,使用变体Variants
@@ -23,7 +24,7 @@ BuildAssetBundleOptions:
 BuildTarget
 
 Build后会获得 2*(n+1) 个文件, 分别是
-	1. 对应资源的 AssetBundlName, AssetBundleName.manifest : 这是资源的集合,实际运行时需要加载的
+	1. 对应资源的 AssetBundlName, AssetBundleName.manifest : 这是资源的集合,实际运行时需要加载的(不需要对应manifest)
 	2. AssetBundle文件所在文件夹名字, AssetBundle文件所在文件夹名字.manifest  :  资源依赖信息
  */
 public class AssetBundlesBuilder : EditorWindow
