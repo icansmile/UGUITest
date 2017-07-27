@@ -30,10 +30,10 @@ bundle.LoadAsset, LoadAllAssets，以及他们的异步加载 LoadAssetAsync, Lo
 
 ============================================================================================================================
 加载 AssetBundle Manifests 依赖描述文件
-如果某个 gameobject 引用了 某个texture， 则texture是否也一起打进同一个bundle？
-两个gameobject同时应用了 某个texture, 是两个包中都有这个texture 还是 先到先得？
+如果某个 gameobject 引用了 某个texture， 则texture是否也一起打进同一个bundle？如果texture有独立的Bundle。则gameobject的bundle会自动引用，否则一同打进一个bundle
+两个gameobject同时应用了 某个texture, 是两个包中都有这个texture 还是 先到先得？如上
 或者其他情况
-如果texture单独打成bundle， 那么就需要依赖文件来保证 texture 的 bundle 先加载
+如果texture单独打成bundle， 那么就需要依赖文件来保证 texture 的 bundle 先加载？ 对的，而且单独打通常是必要的，这就是为什么说要把常用共享资源分离出来为另一个bundle，这样会减少bundle大小
 
 ============================================================================================================================
 管理 已加载的AssetBundle
@@ -49,6 +49,21 @@ bundle.LoadAsset, LoadAllAssets，以及他们的异步加载 LoadAssetAsync, Lo
 当必须使用Unload(false)的时候， 还需要调用Resources.UnloadUnusedAssets (这个方法具体什么用， 这样做和Unload(true) 有何区别？)
 	Unload(false) 会断开AssetBundle 和 生成的引用Obejct的链接， 当下载再次AssetBundle.LoadAsset的时候，就会多产生一个引用Object
 	所以Unload, 在两种情况下分别会卸载哪些东西？>_<!
+
+当bundle中有依赖其他bundle的时候，unload会对表现产生影响，
+如果2个bundle, x 和 y 同时依赖另一个bundle z
+1.如果不先加载z， 那x,y能正常加载么？也就是z会被自动加载不？ 必须先加载依赖项
+2.场景中同时存在了 x,y, 对x作unload(true), y会出现异常么？ unload(false)呢？x,y之前没有联系，所以没影响
+3.场景中存在x， 对x作unload(true),此时 z会被卸载么？即y能正常加载么？ unload(false)呢？如上，无关，只有 【被依赖项z】 发生改变时，才会影响到【依赖项x,y】
+
+PS!: bundle会存在多个资源， 所以Unload是针对n个资源，以上讨论的都是1个资源，并且有依赖其他资源的情况, 所以只要z bundle正常的情况下，x,y怎么Unload都不会对对方造成影响
+如果x bundle包含了 a,b资源， y bundle包含了c资源， 且c资源依赖于a资源
+1.先加载 y bundle， 能不能正常显示？不能，必须先加载x,才有c资源
+2.先加载 x bundle，再加载y bundle， 对 x 作unload(true), y bundle还正常不？ c资源被unlaod了，所以不正常
+3.先加载 x bundle, 再加载y bundle, 对 x 作unload(false), y bundle应该是正常的， 然后再对 y bundle 做 Unload, 此时 c 资源会被 unload 吗？是否要用Resources.unloadunused
+也就是， Unload是否只针对从本Bundle生成的资源？ 
+是的！y bundle不会管 x bundle 中的资源 c， 所以c不会被unload，c迷路了，这个时候就要用Resources.UnloadUnusedAssets()了
+就算是Destroy(y),也没法 清除资源 c 的缓存， 必须得用Unload
 
 ============================================================================================================================
 补丁
@@ -222,8 +237,12 @@ public class AssetBundlesLoader
 		}
 	}
 
-	private void unloadBundle(string path)
+	public void UnloadBundle(string name, bool unloadAll)
 	{
-		bundleDict.Remove(path);
+		if(bundleDict.ContainsKey(name))
+		{
+			bundleDict[name].Unload(unloadAll);
+			bundleDict.Remove(name);
+		}
 	}
 }

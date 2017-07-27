@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 437446642
+CRC: 495210006
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: f06ab273cacc2b550abd402c7f8d58b6
+    Hash: 29d8a020b721b7f4b1ea3ab04f4abaf0
   TypeTreeHash:
     serializedVersion: 2
     Hash: 07909080f476ae96bb9ccdbb6891692a
@@ -28,5 +28,6 @@ ClassTypes:
 - Class: 65
   Script: {instanceID: 0}
 Assets:
-- Assets/AssetBundles_Learn/Res/Prefabs/bg2.prefab
+- Assets/AssetBundles_Learn/Res/Prefabs/bg3.prefab
+- Assets/AssetBundles_Learn/Res/Textures/bg4.jpg
 Dependencies: []

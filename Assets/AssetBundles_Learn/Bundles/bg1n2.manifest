@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 437446642
+CRC: 3264305085
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: f06ab273cacc2b550abd402c7f8d58b6
+    Hash: 3392a6645edf39e8e65d80eda365b366
   TypeTreeHash:
     serializedVersion: 2
     Hash: 07909080f476ae96bb9ccdbb6891692a
@@ -28,5 +28,6 @@ ClassTypes:
 - Class: 65
   Script: {instanceID: 0}
 Assets:
-- Assets/AssetBundles_Learn/Res/Prefabs/bg2.prefab
-Dependencies: []
+- Assets/AssetBundles_Learn/Res/Prefabs/bg1n2.prefab
+Dependencies:
+- /Users/NickCan/WorkSpace/UnityProjects/UGUITest/Assets/AssetBundles_Learn/Bundles/tex_bg1
