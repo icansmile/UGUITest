@@ -98,6 +98,7 @@ public class AssetBundleTest : MonoBehaviour {
 		if(GUILayout.Button("显示y(prefab bg4)"))
 		{
 			GameObject go = AssetBundlesLoader.Instance.GetRes<GameObject>("y", "bg4");
+
 			Instantiate(go);
 		}
 
@@ -110,6 +111,23 @@ public class AssetBundleTest : MonoBehaviour {
 		if(GUILayout.Button("Destroy y"))
 		{
 			Destroy(GameObject.Find("bg4(Clone)"));
+		}
+
+		GUILayout.EndHorizontal();
+
+		GUILayout.BeginHorizontal();
+		if(GUILayout.Button("加载主bundle"))
+		{
+			StartCoroutine(AssetBundlesLoader.Instance.LoadFromCacheOrDownload("file:///" + bundlesDir + "/Bundles", 0));
+		}
+
+		if(GUILayout.Button("加载主bundle manifest"))
+		{
+			AssetBundleManifest manifest = AssetBundlesLoader.Instance.GetRes<AssetBundleManifest>("Bundles", "AssetBundleManifest");
+			foreach(string mf in manifest.GetAllDependencies("y"))
+			{
+				Debug.Log(mf);
+			}
 		}
 
 		GUILayout.EndHorizontal();

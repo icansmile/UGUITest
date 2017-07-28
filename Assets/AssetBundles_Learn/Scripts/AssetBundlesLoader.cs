@@ -5,6 +5,10 @@ using System.IO;
 
 /*
 https://www.one-tab.com/page/A1rUTxPVR-2wOXtgLGh6LQ
+
+所有的manifest信息都可以在主bundle中获取, 因此打包得到的manifest只用来编辑器预览. 实际使用中,要获取依赖信息,只要读取 主bundle 为 AssetBundleManifest 类型即可.
+主bundle.name是个空字符串, 如果根据name缓存的话, 需要注意.
+加载manifest的asset name 是 AssetBundleManifest
 ============================================================================================================================
 4种方式加载 AssetBundle
 
@@ -134,7 +138,6 @@ public class AssetBundlesLoader
 		return bundle;
 	}
 
-	//可能官方案例不是最佳实践？ www不用dispose么？ ..反正这里用using自动dispose下先
 	public IEnumerator LoadFromCacheOrDownload(string url, int version)
 	{
 		while(!Caching.ready)
@@ -176,23 +179,6 @@ public class AssetBundlesLoader
 		yield return null;
 	}
 
-	public AssetBundleManifest GetAssetBundleManifest(string path, string name)
-	{
-		AssetBundle bundle = LoadFromFile(path);
-		AssetBundleManifest manifest = bundle.LoadAsset<AssetBundleManifest>(name);
-		return manifest;
-
-		// //根据依赖列表，加载依赖
-		// string[] dependencies = manifest.GetAllDependencies("bundleName");
-		// foreach(var dependency in dependencies)
-		// {
-		// 	LoadFromFile(dependency);
-		// }
-	}
-
-
-
-
 
 
 
@@ -224,6 +210,9 @@ public class AssetBundlesLoader
 
 	private void addBundle(string bundleName, AssetBundle bundle)
 	{
+		//主bundle的name是空字符串
+		bundleName = bundleName == "" ? "Bundles" : bundleName;
+
 		if(bundle != null)
 		{
 			bundleDict[bundleName] = bundle;

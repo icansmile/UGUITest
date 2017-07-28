@@ -23,9 +23,12 @@ BuildAssetBundleOptions:
 
 BuildTarget
 
+
 Build后会获得 2*(n+1) 个文件, 分别是
 	1. 对应资源的 AssetBundlName, AssetBundleName.manifest : 这是资源的集合,实际运行时需要加载的(不需要对应manifest)
 	2. AssetBundle文件所在文件夹名字, AssetBundle文件所在文件夹名字.manifest  :  资源依赖信息
+	3. 主bundle保存了所有的manifest(主要是各个bundle的依赖关系)
+
  */
 public class AssetBundlesBuilder : EditorWindow
 {
