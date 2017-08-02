@@ -1,0 +1,28 @@
+ManifestFileVersion: 0
+CRC: 1773513884
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 920f440391df6ec5e1f4bdc8adebbdd4
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 8c82af9f276b27ec2a396fecb7931109
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 212
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+Assets:
+- Assets/AssetBundles_Learn/Res/Prefabs/bg5.prefab
+Dependencies: []
