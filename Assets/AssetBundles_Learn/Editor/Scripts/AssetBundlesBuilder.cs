@@ -35,8 +35,34 @@ public class AssetBundlesBuilder : EditorWindow
 	[MenuItem("AssetBundles/Build")]
 	private static void Build()
 	{
-		BuildPipeline.BuildAssetBundles(Application.dataPath + "/AssetBundles_Learn/Bundles", BuildAssetBundleOptions.None, EditorUserBuildSettings.activeBuildTarget);
+		BuildPipeline.BuildAssetBundles(Application.dataPath + "/AssetBundles_Learn/Bundles", BuildAssetBundleOptions.ChunkBasedCompression, EditorUserBuildSettings.activeBuildTarget);
 		AssetDatabase.Refresh();
+	}
+
+	[MenuItem("AssetBundles/ExportVersionInfo")]
+	private static void ExportVersionInfo()
+	{
+		string version = "1.0.0";
+
+		System.Text.StringBuilder versionInfo = new System.Text.StringBuilder();
+		versionInfo.AppendLine(version);
+
+		//遍历所有bundle
+		AssetBundle mainBundle = AssetBundle.LoadFromFile(Application.dataPath + "/AssetBundles_Learn/Bundles/Bundles");
+		AssetBundleManifest manifest = mainBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
+
+		foreach(var b in manifest.GetAllAssetBundles())
+		{
+			versionInfo.AppendLine(b);
+			versionInfo.AppendLine(manifest.GetAssetBundleHash(b).ToString());
+		}
+
+		FileStream fs = File.OpenWrite(Application.dataPath + "/AssetBundles_Learn/versionInfo.txt");
+		byte[] bytes = System.Text.Encoding.Unicode.GetBytes(versionInfo.ToString());
+		fs.Write(bytes, 0, bytes.Length);
+		fs.Close();
+
+		mainBundle.Unload(true);
 	}
 
 	[MenuItem("AssetBundles/Tool/SetMaterial")]

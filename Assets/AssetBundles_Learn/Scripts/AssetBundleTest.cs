@@ -131,5 +131,10 @@ public class AssetBundleTest : MonoBehaviour {
 		}
 
 		GUILayout.EndHorizontal();
+
+		if(GUILayout.Button("Resources.UnloadUnusedAssets"))
+		{
+			Resources.UnloadUnusedAssets();
+		}
 	}
 }
