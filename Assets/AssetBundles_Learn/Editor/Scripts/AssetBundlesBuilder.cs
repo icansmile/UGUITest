@@ -32,23 +32,35 @@ Build后会获得 2*(n+1) 个文件, 分别是
  */
 public class AssetBundlesBuilder : EditorWindow
 {
+
 	[MenuItem("AssetBundles/Build")]
 	private static void Build()
 	{
-		BuildPipeline.BuildAssetBundles(Application.dataPath + "/AssetBundles_Learn/Bundles", BuildAssetBundleOptions.ChunkBasedCompression, EditorUserBuildSettings.activeBuildTarget);
+		string serverBundleDir = Application.dataPath + "/../Res/Bundles";
+
+		if(!Directory.Exists(serverBundleDir))
+			Directory.CreateDirectory(serverBundleDir);
+
+		BuildPipeline.BuildAssetBundles(serverBundleDir, BuildAssetBundleOptions.ChunkBasedCompression, EditorUserBuildSettings.activeBuildTarget);
 		AssetDatabase.Refresh();
 	}
 
 	[MenuItem("AssetBundles/ExportVersionInfo")]
 	private static void ExportVersionInfo()
 	{
+		string serverVersionFilePath = Application.dataPath + "/../Res/versionInfo.txt";
+		string serverBundlesDir = Application.dataPath + "/../Res/Bundles";
+
+		if(!Directory.Exists(serverBundlesDir))
+			Directory.CreateDirectory(serverBundlesDir);
+
 		string version = "1.0.0";
 
 		System.Text.StringBuilder versionInfo = new System.Text.StringBuilder();
 		versionInfo.AppendLine(version);
 
 		//遍历所有bundle
-		AssetBundle mainBundle = AssetBundle.LoadFromFile(Application.dataPath + "/AssetBundles_Learn/Bundles/Bundles");
+		AssetBundle mainBundle = AssetBundle.LoadFromFile(serverBundlesDir + serverBundlesDir.Substring(serverBundlesDir.LastIndexOf("/")));
 		AssetBundleManifest manifest = mainBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
 
 		foreach(var b in manifest.GetAllAssetBundles())
@@ -57,13 +69,21 @@ public class AssetBundlesBuilder : EditorWindow
 			versionInfo.AppendLine(manifest.GetAssetBundleHash(b).ToString());
 		}
 
-		FileStream fs = File.OpenWrite(Application.dataPath + "/AssetBundles_Learn/versionInfo.txt");
-		byte[] bytes = System.Text.Encoding.Unicode.GetBytes(versionInfo.ToString());
+		FileStream fs = File.OpenWrite(serverVersionFilePath);
+		byte[] bytes = System.Text.Encoding.UTF8.GetBytes(versionInfo.ToString());
 		fs.Write(bytes, 0, bytes.Length);
 		fs.Close();
 
 		mainBundle.Unload(true);
 	}
+
+
+
+
+
+
+
+
 
 	[MenuItem("AssetBundles/Tool/SetMaterial")]
 	private static void SetMaterial()

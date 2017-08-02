@@ -11,25 +11,24 @@ public class AssetBundleUpdater : MonoBehaviour
 	private List<string> diffBundleNameList;
 
 	private string localVersionFilePath;
-	private string localBundlesPath;
+	private string localBundlesDir;
 
 	//正常情况由服务器返回
-	private string serverVersionFilePath = "file:///Users/laishencan/Desktop/Res/versionInfo.txt";
-	private string serverBundlesPath = "file:///Users/laishencan/Desktop/Res/Bundles";
+	private string serverVersionFilePath;
+	private string serverBundlesDir;
 
 	void Start()
 	{
+		localVersionFilePath = Application.persistentDataPath + "/Res/versionInfo.txt";
+		localBundlesDir = Application.persistentDataPath + "/Res/Bundles";
+		serverVersionFilePath = "file:///" + Application.dataPath + "/../Res/versionInfo.txt";
+		serverBundlesDir = "file:///" + Application.dataPath + "/../Res/Bundles";
 
+		localBundleMD5Dict = new Dictionary<string, string>();
+		serverBundleMD5Dict = new Dictionary<string, string>();
+		diffBundleNameList = new List<string>();
 
-		localVersionFilePath = Application.persistentDataPath + "/versionInfo.txt";
-		localBundlesPath = Application.persistentDataPath + "/Bundles";
-		Debug.Log(localVersionFilePath);
-
-		Stream localVersionFileStream = File.Open(localVersionFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-		StreamReader reader = new StreamReader(localVersionFileStream);
-		Debug.Log(reader.ReadToEnd());
-
-		// StartCoroutine(updateVersion());
+		StartCoroutine(updateVersion());
 	}
 		
 	/// <summary>
@@ -40,12 +39,15 @@ public class AssetBundleUpdater : MonoBehaviour
 	/// </summary>
 	/// <returns></returns>
 	IEnumerator updateVersion()
-	{
+	{	
+		if(!Directory.Exists(localBundlesDir))
+			Directory.CreateDirectory(localBundlesDir);
+
 		//读取本地version
 		Stream localVersionFileStream = File.Open(localVersionFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
 
 		StreamReader reader = new StreamReader(localVersionFileStream);
-		Debug.Log(reader.ReadToEnd());
+		// Debug.Log(reader.ReadToEnd());
 		localBundleMD5Dict = readVersionFile(localVersionFileStream);
 
 		//读取服务器version
@@ -55,7 +57,6 @@ public class AssetBundleUpdater : MonoBehaviour
 		{
 			MemoryStream memStream = new MemoryStream(www.bytes);
 			serverBundleMD5Dict = readVersionFile(memStream);
-
 			memStream.Close();
 		}
 		else
@@ -72,7 +73,7 @@ public class AssetBundleUpdater : MonoBehaviour
 			yield return StartCoroutine(downloadRes(diffBundleNameList));
 		}
 
-		localVersionFileStream.Position = 0;
+		localVersionFileStream.SetLength(0);
 		localVersionFileStream.Write(www.bytes, 0, www.bytes.Length);
 		localVersionFileStream.Flush();
 		localVersionFileStream.Close();
@@ -87,13 +88,13 @@ public class AssetBundleUpdater : MonoBehaviour
 	{
 		for(int i = 0; i < bundleNames.Count; ++i)
 		{
-			Debug.Log(bundleNames[i]);
-			using(WWW www = new WWW(bundleNames[i]))
+			using(WWW www = new WWW(serverBundlesDir + "/" + bundleNames[i]))
 			{
+				Debug.Log(www.url);
 				yield return www;
 				if(string.IsNullOrEmpty(www.error))
 				{
-					replaceLocalFile(localBundlesPath + "/" + bundleNames, www.bytes);
+					replaceLocalFile(localBundlesDir + "/" + bundleNames[i], www.bytes);
 				}
 				else
 				{
@@ -114,6 +115,7 @@ public class AssetBundleUpdater : MonoBehaviour
 	{
 		Debug.Log("更新文件 -- " + path);
 		FileStream fs = new FileStream(path, FileMode.OpenOrCreate);
+		fs.SetLength(0);
 		fs.Write(data, 0, data.Length);
 		fs.Flush();
 		fs.Close();
@@ -140,8 +142,6 @@ public class AssetBundleUpdater : MonoBehaviour
 			if(string.IsNullOrEmpty(bundleName)) break;
 
 			string md5 = reader.ReadLine();
-
-			Debug.Log(bundleName);
 
 			bundleMD5Dict.Add(bundleName, md5);
 		}

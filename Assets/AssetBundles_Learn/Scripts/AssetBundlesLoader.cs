@@ -118,8 +118,6 @@ public class AssetBundlesLoader
 
 		AssetBundle bundle = createRequest.assetBundle;
 		addBundle(bundle.name, bundle);
-
-		yield return null;
 	}
 
 	public AssetBundle LoadFromMemorySync(string path)
@@ -136,6 +134,15 @@ public class AssetBundlesLoader
 		addBundle(bundle.name, bundle);
 
 		return bundle;
+	}
+
+	public IEnumerator LoadFromFileAsync(string path)
+	{
+		AssetBundleCreateRequest createRequest = AssetBundle.LoadFromFileAsync(path);
+		yield return createRequest;
+
+		AssetBundle bundle = createRequest.assetBundle;
+		addBundle(bundle.name, bundle);
 	}
 
 	public IEnumerator LoadFromCacheOrDownload(string url, int version)
@@ -155,8 +162,6 @@ public class AssetBundlesLoader
 
 			addBundle(www.assetBundle.name, www.assetBundle);
 		}
-
-		yield return null;
 	}
 
 	public IEnumerator UnityWebRequest(string uri, uint version)

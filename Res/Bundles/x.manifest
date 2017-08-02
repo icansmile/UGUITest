@@ -1,0 +1,33 @@
+ManifestFileVersion: 0
+CRC: 495210006
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: fa951bd42025e39b2efad615cc8f494c
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 07909080f476ae96bb9ccdbb6891692a
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+Assets:
+- Assets/AssetBundles_Learn/Res/Prefabs/bg3.prefab
+- Assets/AssetBundles_Learn/Res/Textures/bg4.jpg
+Dependencies: []

@@ -9,7 +9,13 @@ public class AssetBundleTest : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-		bundlesDir = Application.dataPath + "/AssetBundles_Learn/Bundles";
+		AssetBundleUpdater updater = GameObject.FindObjectOfType<AssetBundleUpdater>();
+		if(updater == null)
+		{
+			this.gameObject.AddComponent<AssetBundleUpdater>();
+		}
+
+		bundlesDir = Application.persistentDataPath + "/Res/Bundles";
 	}
 
 	/// <summary>
@@ -21,17 +27,18 @@ public class AssetBundleTest : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 		if(GUILayout.Button("下载tex_bg1(被依赖项)"))
 		{
-			StartCoroutine(AssetBundlesLoader.Instance.LoadFromCacheOrDownload("file:///" + bundlesDir + "/tex_bg1", 0));
+			StartCoroutine(AssetBundlesLoader.Instance.LoadFromFileAsync(bundlesDir + "/tex_bg1"));
 		}
 
 		if(GUILayout.Button("下载bg1"))
 		{
-			StartCoroutine(AssetBundlesLoader.Instance.LoadFromCacheOrDownload("file:///" + bundlesDir + "/bg1", 0));
+			string path = bundlesDir + "/bg1";
+			AssetBundlesLoader.Instance.LoadFromFile(path);
 		}
 
 		if(GUILayout.Button("下载bg1n2"))
 		{
-			StartCoroutine(AssetBundlesLoader.Instance.LoadFromCacheOrDownload("file:///" + bundlesDir + "/bg1n2", 0));
+			StartCoroutine(AssetBundlesLoader.Instance.LoadFromFileAsync(bundlesDir + "/bg1n2"));
 		}
 		GUILayout.EndHorizontal();
 
@@ -76,7 +83,7 @@ public class AssetBundleTest : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 		if(GUILayout.Button("下载x"))
 		{
-			StartCoroutine(AssetBundlesLoader.Instance.LoadFromCacheOrDownload("file:///" + bundlesDir + "/x", 0));
+			StartCoroutine(AssetBundlesLoader.Instance.LoadFromFileAsync(bundlesDir + "/x"));
 		}
 
 		if(GUILayout.Button("显示x(prefab bg3)"))
@@ -92,7 +99,7 @@ public class AssetBundleTest : MonoBehaviour {
 
 		if(GUILayout.Button("下载y"))
 		{
-			StartCoroutine(AssetBundlesLoader.Instance.LoadFromCacheOrDownload("file:///" + bundlesDir + "/y", 0));
+			StartCoroutine(AssetBundlesLoader.Instance.LoadFromFileAsync(bundlesDir + "/y"));
 		}
 
 		if(GUILayout.Button("显示y(prefab bg4)"))
@@ -118,7 +125,7 @@ public class AssetBundleTest : MonoBehaviour {
 		GUILayout.BeginHorizontal();
 		if(GUILayout.Button("加载主bundle"))
 		{
-			StartCoroutine(AssetBundlesLoader.Instance.LoadFromCacheOrDownload("file:///" + bundlesDir + "/Bundles", 0));
+			StartCoroutine(AssetBundlesLoader.Instance.LoadFromFileAsync(bundlesDir + "/Bundles"));
 		}
 
 		if(GUILayout.Button("加载主bundle manifest"))
