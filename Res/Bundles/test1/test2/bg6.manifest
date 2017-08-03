@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3624777594
+CRC: 1380533684
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 7145ab013c2f466a80b1280123c185c3
+    Hash: 596ff9850b7ee98399564b8806af70d1
   TypeTreeHash:
     serializedVersion: 2
     Hash: 07909080f476ae96bb9ccdbb6891692a
@@ -28,6 +28,5 @@ ClassTypes:
 - Class: 65
   Script: {instanceID: 0}
 Assets:
-- Assets/AssetBundles_Learn/Res/Prefabs/bg4.prefab
-Dependencies:
-- /Users/laishencan/Projects/MyTest/Assets/../Res/Bundles/x
+- Assets/AssetBundles_Learn/Res/Prefabs/bg6.prefab
+Dependencies: []

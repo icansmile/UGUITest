@@ -114,6 +114,11 @@ public class AssetBundleUpdater : MonoBehaviour
 	void replaceLocalFile(string path, byte[] data)
 	{
 		Debug.Log("更新文件 -- " + path);
+		//若有文件夹,则需要先提取路径,判断是否存在. CreateDirectory可以自动创建多层目录  test1/test2/
+		string dirPath = path.Substring(0, path.LastIndexOf('/'));
+		if(!Directory.Exists(dirPath))
+			Directory.CreateDirectory(dirPath);
+
 		FileStream fs = new FileStream(path, FileMode.OpenOrCreate);
 		fs.SetLength(0);
 		fs.Write(data, 0, data.Length);
