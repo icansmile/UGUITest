@@ -75,7 +75,7 @@ public class AssetBundleUpdater : MonoBehaviour
 
 		localVersionFileStream.SetLength(0);
 		localVersionFileStream.Write(www.bytes, 0, www.bytes.Length);
-		localVersionFileStream.Flush();
+		// localVersionFileStream.Flush();
 		localVersionFileStream.Close();
 	}
 
@@ -122,7 +122,7 @@ public class AssetBundleUpdater : MonoBehaviour
 		FileStream fs = new FileStream(path, FileMode.OpenOrCreate);
 		fs.SetLength(0);
 		fs.Write(data, 0, data.Length);
-		fs.Flush();
+		// fs.Flush();
 		fs.Close();
 	}
 

@@ -82,10 +82,10 @@ Unity没有提供差异检测功能,需要自己实现一套
 ============================================================================================================================
 热更新的情况: http://lvmingbei.hatenablog.com/entry/2016/04/25/185738
 1.版本控制. 文件是否存在, hash值是否一致, size是否一致
-2.断点续传
-3.设备休眠处理
-4.程序切换
-5.网络连接异常
+2.断点续传	HTTP Request
+3.设备休眠处理	Screen.sleepTimeout = SleepTimeout.NeverSleep;
+4.程序切换	Application.runInBackground = true;
+5.网络连接异常	Application.internetReachability
  */
 
 public class AssetBundlesLoader 
