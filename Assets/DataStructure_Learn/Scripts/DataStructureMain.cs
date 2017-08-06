@@ -10,7 +10,6 @@ public class DataStructureMain : MonoBehaviour {
 	private Vector2 scrollPos = Vector2.zero;
 
 	void Start () {
-		
 	}
 	
 	void OnGUI()
@@ -72,6 +71,18 @@ public class DataStructureMain : MonoBehaviour {
 		{
 			InsertionSort sorter = new InsertionSort();
 			sort(sorter);
+		}
+
+		if(GUILayout.Button("Stack - (5+6+3)"))
+		{
+			StackTest stack = new StackTest();
+			content1 = stack.Test();
+		}
+
+		if(GUILayout.Button("Stack - MulBase"))
+		{
+			StackTest stack = new StackTest();
+			content1 = stack.MulBaseTest();
 		}
 
 		scrollPos = GUILayout.BeginScrollView(scrollPos);
