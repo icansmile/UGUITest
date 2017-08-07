@@ -79,11 +79,26 @@ public class DataStructureMain : MonoBehaviour {
 			content1 = stack.Test();
 		}
 
-		if(GUILayout.Button("Stack - MulBase"))
+		if(GUILayout.Button("Stack - 进制转换"))
 		{
 			StackTest stack = new StackTest();
 			content1 = stack.MulBaseTest();
 		}
+
+
+		if(GUILayout.Button("BitArray - 素数"))
+		{
+			List<int> list = new List<int>();
+			for(int i = 0; i < 100; ++i)
+			{
+				list.Add(1);
+			}
+
+			BitArrayTest bat = new BitArrayTest();
+
+			content1 = bat.GetPrimes(list.ToArray());
+		}
+
 
 		scrollPos = GUILayout.BeginScrollView(scrollPos);
 		GUILayout.Label(content1);
