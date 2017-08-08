@@ -91,6 +91,12 @@ public class DataStructureMain : MonoBehaviour {
 			sort(sorter);
 		}
 
+		if(GUILayout.Button("基数排序"))
+		{
+			RadixSort<int> sorter = new RadixSort<int>();
+			sort(sorter);
+		}
+
 		if(GUILayout.Button("Stack - (5+6+3)"))
 		{
 			StackTest stack = new StackTest();

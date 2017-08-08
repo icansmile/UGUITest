@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 
+/// <summary>
+/// 归并排序
+/// </summary>
 public class MergeSort <T> : ISorter<T>
 where T : System.IComparable
 {
