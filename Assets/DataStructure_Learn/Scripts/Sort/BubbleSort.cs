@@ -1,25 +1,33 @@
 using System.Collections.Generic;
 
 /// <summary>
-/// 冒泡排序 - 从后往前相邻的两个元素两两比较, 把小的放到前面去(小泡泡上浮)
-/// 稳定排序算法
+/// 冒泡排序 - 两两相比, 大的放后
+/// 优化: bool echanged, 如果某次遍历中没有发生交换,则说明排序完成
+/// 稳定排序
 /// 时间复杂度 o(n^2)     n*n-1
 /// </summary>
-public class BubbleSort : ISorter
+public class BubbleSort <T> : ISorter<T>
+where T : System.IComparable
 {
-    public void Sort(List<int> oriList)
+    public void Sort(List<T> oriList)
     {
-        for(int i = oriList.Count - 1; i > 0; --i)
+        bool exchanged = true;
+
+        for(int i = 0; i < oriList.Count - 1; ++i)
         {
-            for(int j = i; j >= 0; --j)
+            for(int j = 0; j < oriList.Count - 1 - i; ++j)
             {
-                if(oriList[i] < oriList[j])
+                if(oriList[j].CompareTo(oriList[j+1]) > 0)
                 {
-                    int temp = oriList[i];
-                    oriList[i] = oriList[j];
-                    oriList[j] = temp;
+                    T temp = oriList[j];
+                    oriList[j] = oriList[j+1];
+                    oriList[j+1] = temp;
+                    exchanged = true;
                 }
             }
+
+            if(!exchanged)
+                break;
         }
     }
 }

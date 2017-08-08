@@ -40,10 +40,10 @@ public class DataStructureMain : MonoBehaviour {
 
 		GUILayout.EndHorizontal();
 
-		System.Action<ISorter> sort = (ISorter sorter) => 
+		System.Action<ISorter<int>> sort = (ISorter<int> sorter) => 
 		{
 			CodeTimeTester timer = new CodeTimeTester();
-			List<int> list = CodeTester.GetRandomIntList(1000);
+			List<int> list = CodeTester.GetRandomIntList(10);
 			content1 = "";
 			list.ForEach(i => {content1 += i + " ";});
 
@@ -57,19 +57,37 @@ public class DataStructureMain : MonoBehaviour {
 
 		if(GUILayout.Button("冒泡排序"))
 		{
-			BubbleSort sorter = new BubbleSort();
+			BubbleSort<int> sorter = new BubbleSort<int>();
+			sort(sorter);
+		}
+
+		if(GUILayout.Button("快速排序"))
+		{
+			QuickSort<int> sorter = new QuickSort<int>();
 			sort(sorter);
 		}
 
 		if(GUILayout.Button("选择排序"))
 		{
-			SelectionSort sorter = new SelectionSort();
+			SelectionSort<int> sorter = new SelectionSort<int>();
 			sort(sorter);
 		}
 
 		if(GUILayout.Button("插入排序"))
 		{
-			InsertionSort sorter = new InsertionSort();
+			InsertionSort<int> sorter = new InsertionSort<int>();
+			sort(sorter);
+		}
+
+		if(GUILayout.Button("希尔排序"))
+		{
+			ShellSort<int> sorter = new ShellSort<int>();
+			sort(sorter);
+		}
+
+		if(GUILayout.Button("归并排序"))
+		{
+			MergeSort<int> sorter = new MergeSort<int>();
 			sort(sorter);
 		}
 

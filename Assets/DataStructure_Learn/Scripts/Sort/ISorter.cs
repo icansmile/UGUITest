@@ -1,6 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 
-public interface ISorter
+public interface ISorter<T> where T : System.IComparable
 {
-    void Sort(List<int> oriList);
+    void Sort(List<T> oriList);
 }

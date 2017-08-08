@@ -5,10 +5,11 @@ using UnityEngine;
 
 public class CodeTester {
 
-	public static List<int> GetRandomIntList(int count)
+	public static List<int> GetRandomIntList(int count, int seed = -1)
 	{
 		List<int> randomList = new List<int>();
-		System.Random rnd = new System.Random(0);
+		seed = seed == -1 ? System.DateTime.Now.Second : seed;
+		System.Random rnd = new System.Random(seed);
 
 		for(int i = 0; i < count; ++i)
 		{
