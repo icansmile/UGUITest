@@ -5,6 +5,14 @@ using System;
 using System.Threading;  
 using System.Linq;  
 
+/// <summary>
+/// 组件:
+/// 1.线程计数: 当前线程数, 最大线程数. 用Interlocked.Increment 和 Decrement来操作多线程计数变量
+/// 2.线程开启方法: RunAsync(Action) 从ThreadPool.QueueUserWorkItem(WorkCallBack, object arg)申请一个线程操作
+/// 3.主线程委托列表:线程操作结束后, 由于没有通知, 并且子线程不能操作主线程模块, 所以主线程的后续操作用委托来实现 : _action, delayed,
+/// 4.主线程委托列表加入方法:QueueOnMainThread, 对委托列表加锁!.防止和update对委托列表的操作冲突
+/// 5.主线程委托执行: update 查看是否有主线程委托需要执行 ,同样要给委托列表加锁
+/// </summary>
 public class Loom : MonoBehaviour  
 {  
     //最大线程数
