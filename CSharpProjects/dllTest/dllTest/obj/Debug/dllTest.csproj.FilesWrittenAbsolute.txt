@@ -1,0 +1,4 @@
+/Users/laishencan/Projects/dllTest/dllTest/bin/Debug/dllTest.dll.mdb
+/Users/laishencan/Projects/dllTest/dllTest/bin/Debug/dllTest.dll
+/Users/laishencan/Projects/dllTest/dllTest/obj/Debug/dllTest.dll
+/Users/laishencan/Projects/dllTest/dllTest/obj/Debug/dllTest.dll.mdb
