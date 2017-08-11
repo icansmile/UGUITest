@@ -2,7 +2,9 @@
 using System.Collections;  
 using Net;  
 using System.Threading;
-  
+/// <summary>
+/// socket简单实现 http://blog.csdn.net/linshuhe1/article/details/51386559
+/// </summary>  
 public class TestSocket : MonoBehaviour {  
     private Thread thread;
     private ClientSocket clientSocket;
