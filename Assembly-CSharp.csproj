@@ -215,7 +215,9 @@
      <Compile Include="Assets\NGUI\Scripts\UI\UIViewport.cs" />
      <Compile Include="Assets\NetWork_Learn\Scripts\ByteBuffer.cs" />
      <Compile Include="Assets\NetWork_Learn\Scripts\Console.cs" />
+     <Compile Include="Assets\NetWork_Learn\Scripts\SocketClientAsyncConsole.cs" />
      <Compile Include="Assets\NetWork_Learn\Scripts\SocketClientConsole.cs" />
+     <Compile Include="Assets\NetWork_Learn\Scripts\SocketServerAsyncConsole.cs" />
      <Compile Include="Assets\NetWork_Learn\Scripts\SocketServerConsole.cs" />
      <Compile Include="Assets\Reflection_Learn\Scripts\ReflectionMain.cs" />
      <Compile Include="Assets\Reflection_Learn\Scripts\ReflectionTestClass.cs" />

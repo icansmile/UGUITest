@@ -24,5 +24,16 @@ public class Console : MonoBehaviour {
 		{
 			UnityEngine.SceneManagement.SceneManager.LoadScene("Server");
 		}
+
+		if(GUILayout.Button("异步客户端"))
+		{
+			UnityEngine.SceneManagement.SceneManager.LoadScene("AsyncClient");
+		}
+
+		if(GUILayout.Button("异步服务端"))
+		{
+			UnityEngine.SceneManagement.SceneManager.LoadScene("AsyncServer");
+		}
+
 	}
 }
