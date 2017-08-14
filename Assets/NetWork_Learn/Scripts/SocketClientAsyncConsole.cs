@@ -99,13 +99,9 @@ public class SocketClientAsyncConsole : MonoBehaviour {
 	{
 		udpState.udpClient.BeginReceiveFrom(udpState.buffer, 0, udpState.buffer.Length, SocketFlags.None, ref udpState.remoteEP,
 		asyncReuslt => {
-			if(asyncReuslt.IsCompleted)
-			{
-				udpState.udpClient.EndReceiveFrom(asyncReuslt, ref udpState.remoteEP);
-				content.AppendLine(Encoding.UTF8.GetString(udpState.buffer));
-				asyncUDPReceive();
-			}
-
+			udpState.udpClient.EndReceiveFrom(asyncReuslt, ref udpState.remoteEP);
+			content.AppendLine(Encoding.UTF8.GetString(udpState.buffer));
+			asyncUDPReceive();
 		}, null);
 	}
 
@@ -114,10 +110,7 @@ public class SocketClientAsyncConsole : MonoBehaviour {
 		var buffer = Encoding.UTF8.GetBytes(msg);
 		udpState.udpClient.BeginSendTo(buffer, 0, buffer.Length, SocketFlags.None, udpState.serverIP,
 		asyncResult => {
-			if(asyncResult.IsCompleted)
-			{
-				udpState.udpClient.EndSendTo(asyncResult);
-			}
+			udpState.udpClient.EndSendTo(asyncResult);
 		}, null);
 	
 	}

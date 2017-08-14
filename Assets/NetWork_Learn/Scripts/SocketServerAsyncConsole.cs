@@ -8,6 +8,7 @@ using System.Text;
 public class SocketServerAsyncConsole : MonoBehaviour {
 
 	private StringBuilder content;
+	private Socket curTCPClient;
 
 	// Use this for initialization
 	void Start () 
@@ -36,6 +37,7 @@ public class SocketServerAsyncConsole : MonoBehaviour {
 	{
 		tcpServer.BeginAccept(asyncResult => {
 			Socket tcpClient = tcpServer.EndAccept(asyncResult);
+			curTCPClient = tcpClient;
 
 			content.AppendLine("监听到客户端连接");
 			asyncTCPReceive(tcpClient);
@@ -115,23 +117,19 @@ public class SocketServerAsyncConsole : MonoBehaviour {
 	{
 		udpState.udpServer.BeginReceiveFrom(udpState.buffer, 0, udpState.buffer.Length, SocketFlags.None, ref udpState.remoteEP,
 		asyncResult => {
-			//为什么这里要对状态进行判断， 而TCP却没有
-			if(asyncResult.IsCompleted)
-			{
-				IPEndPoint ipep = new IPEndPoint(IPAddress.Any, 0);
-				EndPoint remoteEP = (EndPoint)ipep;
+			IPEndPoint ipep = new IPEndPoint(IPAddress.Any, 0);
+			EndPoint remoteEP = (EndPoint)ipep;
 
-				udpState.udpServer.EndReceiveFrom(asyncResult, ref remoteEP);
+			udpState.udpServer.EndReceiveFrom(asyncResult, ref remoteEP);
 
-				content.AppendLine("客户端: " + Encoding.UTF8.GetString(udpState.buffer));
+			content.AppendLine("客户端: " + Encoding.UTF8.GetString(udpState.buffer));
 
-				udpState.remoteEP = remoteEP;
+			udpState.remoteEP = remoteEP;
 
-				asyncUDPSend("收到消息 " + Encoding.UTF8.GetString(udpState.buffer));
+			asyncUDPSend("收到消息 " + Encoding.UTF8.GetString(udpState.buffer));
 
-				//继续接收消息
-				asyncUDPReceive();
-			}
+			//继续接收消息
+			asyncUDPReceive();
 		}, null);
 	}
 
@@ -139,10 +137,7 @@ public class SocketServerAsyncConsole : MonoBehaviour {
 	{
 		byte[] data =  Encoding.UTF8.GetBytes(msg);
 		udpState.udpServer.BeginSendTo(data, 0, data.Length, SocketFlags.None, udpState.remoteEP, asyncResult => {
-			if(asyncResult.IsCompleted)
-			{
-				udpState.udpServer.EndSendTo(asyncResult);
-			}
+			udpState.udpServer.EndSendTo(asyncResult);
 		}, null);
 	}
 
@@ -160,6 +155,12 @@ public class SocketServerAsyncConsole : MonoBehaviour {
 		if(GUILayout.Button("创建UDP服务"))
 		{
 			udpServerBind();
+		}
+
+		if(GUILayout.Button("连续发送"))
+		{
+			asyncTCPSend(curTCPClient, "我");
+			asyncTCPSend(curTCPClient, "我");
 		}
 
 		GUILayout.Label(content.ToString());
