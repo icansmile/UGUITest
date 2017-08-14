@@ -8,13 +8,26 @@ using UnityEngine;
 /// </summary>
 public class BagView : MonoBehaviour {
 
+	public GameObject Items;
+	public BagModel.BagInfo BagInfo;
+
 	// Use this for initialization
-	void Start () {
-		
+	void Start () 
+	{
+		updateItems();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+
+	void updateItems()
+	{
+		for(int i = 0; i < 2; ++i)
+		{
+			GameObject cell = Items.transform.Find(string.Format("slot ({0})/item",i)).gameObject;
+			cell.Get();
+		}
+	}
+
+	public void OnDrag(GameObject go)
+	{
+		Debug.Log("drag");
 	}
 }
