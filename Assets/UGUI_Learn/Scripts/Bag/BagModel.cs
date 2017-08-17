@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//列表改变事件
+public delegate void VoidHandler();
 public class BagModel
 {
 	public class ItemInfo
@@ -37,8 +39,7 @@ public class BagModel
 			}
 		}
 
-		//列表改变事件
-		public delegate void VoidHandler();
+
 		public event VoidHandler ItemListChanged;
 
 		public BagInfo(List<ItemInfo> _Items)
