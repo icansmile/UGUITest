@@ -10,7 +10,7 @@
 /// 
 /// 组件:
 /// 原型抽象类 : 规定必须实现 Clone 接口
-/// 具体原型类
+/// 具体原型类 : 实现Clone接口
 /// </summary>
 namespace Prototype
 {
