@@ -207,3 +207,129 @@ end
 for v in elementIterator(tab) do
     print(v)
 end
+
+print("=========表===========")
+table.insert( tab, 6, 1)
+tab[8] = 2
+table.remove( tab, 5)
+print(table.concat( tab, ", ", 2,3))
+
+local function comp(a,b) 
+    if tonumber(a) == nil or tonumber(b) == nil then 
+        print("nil",a,b)
+        return false 
+    end 
+    return tonumber(a) < tonumber(b)
+end 
+
+-- sort是依赖序号的,会因为序号不连续而中断
+table.insert( tab, 6, 2)
+table.sort( tab, function(x, y)
+        local numX, numY = tonumber(x), tonumber(y)
+        if(not(numX and numY)) then
+            return false
+        end
+
+        if(numX > numY) then
+            print("排序",numX, numY)
+            return true
+        end
+
+        return false
+    end
+)
+
+print("=========表 ipairs===========")
+for k,v in ipairs(tab) do
+    print(k,v)
+end
+
+print("=========表 pairs===========")
+for k,v in pairs(tab) do
+    print(k,v)
+end
+
+print("=========sort test===========")
+tabNum = {1,6,6,5,7}
+table.sort(tabNum, function(x, y)
+        if(x > y) then
+            return true;
+        end
+
+        return false
+    end
+)
+for k, v in ipairs(tabNum) do
+    print(k, v)
+end
+
+
+print("=========模块与包===========")
+module = {}
+module.a = "test mem"
+function module.func ()
+    print(module.a);
+end
+
+module.func()
+
+print("=========metatable 元表===========")
+other = {foo = 3}
+t = setmetatable({foo = 2}, {__index = other, __tostring = function(tab) return "tostring test" end, test=tets})
+print(t.foo)
+print(t)
+
+print("=========面向对象:封装,继承,多态,抽象===========")
+-- meta class
+Shape = {area = 0}
+
+-- 基础方法new
+function Shape:new(o, side)
+    o = o or {}
+    setmetatable(o, self)
+    self.__index = self
+    side = side or 0
+    self.area = side^2
+    return o
+end
+
+--基础类方法
+function Shape:printArea()
+    print("面积为: " .. self.area)
+end
+
+-- 创建对象
+myshape = Shape:new(nil, 10)
+myshape:printArea()
+
+-- 派生类
+Square = Shape:new()
+
+-- 派生类方法 new
+function Square:new(o, side)
+    o = o or Shape:new(o, side)
+    setmetatable(o, self)
+    self.__index = self
+    return o
+end
+
+-- 创建对象
+mysquare = Square:new(nil, 5);
+mysquare:printArea()
+
+Rectangle = Shape:new()
+
+function Rectangle:new(o, length, breadth)
+    o = o or Shape:new(o)
+    setmetatable(o, self)
+    self.__index = self
+    self.area = length * breadth
+    return o
+end
+
+function Rectangle:printArea()
+    print("长方形面积为: " .. self.area)
+end
+
+myrectangle = Rectangle:new(nil, 10, 20)
+myrectangle:printArea();
